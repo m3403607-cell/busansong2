@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>부산 자랑 노랫말 친구</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link href="https://fonts.googleapis.com/css2?family=Jua&family=Noto+Sans+KR:wght@400;500;700&display=swap" rel="stylesheet">
+  <style>
+    body { font-family: 'Noto Sans KR', sans-serif; background-color: #f0f7ff; }
+    .title-font { font-family: 'Jua', sans-serif; }
+    .chat-scroll::-webkit-scrollbar { width: 6px; }
+    .chat-scroll::-webkit-scrollbar-thumb { background-color: #cbd5e1; border-radius: 9999px; }
+  </style>
+</head>
+<body class="min-h-screen flex flex-col text-slate-800">
+
+  <!-- 상단 헤더 & 단계 표시기 -->
+  <header class="bg-sky-600 text-white shadow-md sticky top-0 z-10">
+    <div class="max-w-6xl mx-auto px-4 py-3 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2">
+      <div class="flex items-center gap-2">
+        <span class="text-2xl">🐬</span>
+        <h1 class="title-font text-2xl tracking-wide">부산 자랑 노랫말 친구</h1>
+      </div>
+      <div class="flex items-center gap-1.5 text-xs sm:text-sm overflow-x-auto pb-1 sm:pb-0" id="step-indicator">
+        <span data-step="1" class="step-pill px-2.5 py-1 rounded-full bg-white text-sky-700 font-bold">1. 분야</span>
+        <span>›</span>
+        <span data-step="2" class="step-pill px-2.5 py-1 rounded-full bg-sky-700/60 text-sky-100">2. 목록</span>
+        <span>›</span>
+        <span data-step="3" class="step-pill px-2.5 py-1 rounded-full bg-sky-700/60 text-sky-100">3. 특징</span>
+        <span>›</span>
+        <span data-step="4" class="step-pill px-2.5 py-1 rounded-full bg-sky-700/60 text-sky-100">4. 홍보</span>
+        <span>›</span>
+        <span data-step="5" class="step-pill px-2.5 py-1 rounded-full bg-sky-700/60 text-sky-100">5. 분위기</span>
+        <span>›</span>
+        <span data-step="6" class="step-pill px-2.5 py-1 rounded-full bg-sky-700/60 text-sky-100">6. 완성</span>
+      </div>
+    </div>
+  </header>
+
+  <!-- 메인 영역 -->
+  <main class="flex-1 max-w-6xl w-full mx-auto p-3 sm:p-5 grid grid-cols-1 lg:grid-cols-12 gap-4">
+    
+    <!-- 왼쪽: 대화창 -->
+    <section class="lg:col-span-7 bg-white rounded-2xl shadow-sm border border-sky-100 flex flex-col h-[78vh]">
+      <div class="px-4 py-3 border-b border-slate-100 flex justify-between items-center bg-sky-50/50 rounded-t-2xl">
+        <span class="text-sm font-bold text-sky-800">💬 작사 도우미와 대화하기</span>
+        <button onclick="resetApp()" class="text-xs text-slate-500 hover:text-sky-600 underline">처음부터 다시하기</button>
+      </div>
+
+      <!-- 메시지 목록 -->
+      <div id="chat-box" class="flex-1 p-4 overflow-y-auto space-y-4 chat-scroll"></div>
+
+      <!-- 빠른 선택 버튼 영역 -->
+      <div id="quick-replies" class="px-4 py-2 bg-slate-50 border-t border-slate-100 flex flex-wrap gap-2"></div>
+
+      <!-- 입력창 -->
+      <form id="chat-form" class="p-3 border-t border-slate-200 flex gap-2 bg-white rounded-b-2xl">
+        <input
+          id="user-input"
+          type="text"
+          autocomplete="off"
+          placeholder="여기에 대답을 입력하고 Enter를 누르세요..."
+          class="flex-1 px-4 py-2.5 rounded-xl border border-slate-300 focus:outline-none focus:border-sky-500 text-sm sm:text-base"
+        />
+        <button
+          type="submit"
+          class="px-5 py-2.5 bg-sky-500 hover:bg-sky-600 text-white font-bold rounded-xl transition shrink-0 text-sm sm:text-base"
+        >
+          보내기
+        </button>
+      </form>
+    </section>
+
+    <!-- 오른쪽: 노랫말 공책 -->
+    <section class="lg:col-span-5 bg-amber-50/70 rounded-2xl shadow-sm border border-amber-200 flex flex-col h-[78vh]">
+      <div class="px-4 py-3 border-b border-amber-200/70 flex justify-between items-center bg-amber-100/60 rounded-t-2xl">
+        <span class="text-sm font-bold text-amber-900">🎵 완성된 노랫말 공책</span>
+        <button
+          id="copy-btn"
+          onclick="copyLyrics()"
+          disabled
+          class="px-3 py-1.5 bg-amber-500 hover:bg-amber-600 disabled:bg-slate-300 text-white text-xs font-bold rounded-lg transition"
+        >
+          📋 노랫말 복사하기
+        </button>
+      </div>
+
+      <div id="lyrics-container" class="flex-1 p-5 overflow-y-auto chat-scroll flex flex-col">
+        <div id="lyrics-placeholder" class="my-auto text-center text-slate-400 space-y-2">
+          <div class="text-4xl">🎼</div>
+          <p class="text-sm leading-relaxed">
+            도우미의 질문에 차근차근 대답하면<br/>
+            이곳에 우리 모둠만의<br/>
+            부산 자랑 노랫말이 나타나요!
+          </p>
+        </div>
+
+        <div id="lyrics-content" class="hidden space-y-4">
+          <div class="bg-white p-4 rounded-xl border border-amber-200 shadow-xs">
+            <div class="text-xs text-amber-600 font-bold mb-1">노래 제목
